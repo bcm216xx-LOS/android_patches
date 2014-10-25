@@ -4,7 +4,7 @@ CURRENTPATH=$(readlink -f "$0")
 PATCHBASEPATH=$(dirname "$CURRENTPATH")/platform
 SOURCEBASEPATH=$(readlink -f "$PATCHBASEPATH/../../")
 
-for i in $(find "$PATCHBASEPATH"/ -type d); do
+for i in $(find "$PATCHBASEPATH"/* -type d); do
         PATCHNAME=$(basename "$i")
         PATCHTARGET=$PATCHNAME
         for i in $(seq 4); do
