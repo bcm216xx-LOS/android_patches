@@ -74,8 +74,8 @@ index cbf51bd..67b3646 100644
  
  void Layer::updateTransformHint(const sp<const DisplayDevice>& hw) {
      uint32_t orientation = 0;
-+// CAPRI_HWC has display problem in landscape mode when transform is used
-+#ifndef CAPRI_HWC
++// RHEA_HWC has display problem in landscape mode when transform is used
++#ifndef RHEA_HWC
      if (!mFlinger->mDebugDisableTransformHint) {
          // The transform hint is used to improve performance, but we can
          // only have a single transform hint, it cannot
@@ -128,7 +128,7 @@ index d26d3af..91acecb 100644
      ATRACE_CALL();
  
 +// Rotation artifact problems when useReadPixels is false
-+#ifndef CAPRI_HWC
++#ifdef RHEA_HWC
 +    useReadPixels = true;
 +#endif
 +
