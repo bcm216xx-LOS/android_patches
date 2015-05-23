@@ -1,7 +1,7 @@
 From 1270e696f6df82e96eefdb31209e6b75ca2d7b72 Mon Sep 17 00:00:00 2001
 From: Shubhang Rathore <shubhang92@gmail.com>
 Date: Fri, 25 Jul 2014 23:14:32 +0530
-Subject: [PATCH] av: i9082: fix audio issues
+Subject: [PATCH] av: S6810: fix audio issues
 
 Rebased on pawitp's patches
 
@@ -18,7 +18,7 @@ index 3bb1c80..8bafbac 100644
  #endif
          }
      }
-+// Rhea's OMX fail to set a reasonable default size from width and height
++// RHEA's OMX fail to set a reasonable default size from width and height
 +#ifdef RHEA_HWC
 +    else if (!strncmp(mComponentName, "OMX.BRCM.vc4.decoder.", 21)) {
 +        int32_t width;
