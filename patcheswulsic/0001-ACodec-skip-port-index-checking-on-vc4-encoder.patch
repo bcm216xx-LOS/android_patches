@@ -1,0 +1,29 @@
+From 7c65a0aa07989441b5a27f059215260839c0698e Mon Sep 17 00:00:00 2001
+From: Wulsic <wulsic@hotmail.com>
+Date: Sun, 21 Jun 2015 12:39:01 +0200
+Subject: [PATCH] ACodec: skip port index checking on vc4 encoder
+
+Change-Id: I1ac7dd3fd97afaebac8c697e4bd7ef77dac2939a
+---
+ media/libstagefright/ACodec.cpp | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/media/libstagefright/ACodec.cpp b/media/libstagefright/ACodec.cpp
+index a315cc1..268b975 100644
+--- a/media/libstagefright/ACodec.cpp
++++ b/media/libstagefright/ACodec.cpp
+@@ -3471,6 +3471,11 @@ status_t ACodec::getPortFormat(OMX_U32 portIndex, sp<AMessage> &notify) {
+                 mNode, OMX_IndexParamPortDefinition, &def, sizeof(def)),
+              (status_t)OK);
+ 
++#ifdef RHEA_HWC
++    if (strncmp(mComponentName.c_str(), "OMX.BRCM.vc4.encoder.", 21) != 0)
++        // Skip checking on vc4 encoder. It will return the incorrect
++        // port index, but correct parameters.
++#endif
+     CHECK_EQ((int)def.eDir,
+             (int)(portIndex == kPortIndexOutput ? OMX_DirOutput : OMX_DirInput));
+ 
+-- 
+1.9.1
+

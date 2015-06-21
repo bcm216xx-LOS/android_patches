@@ -1,0 +1,27 @@
+From 04bf02b4aeb2b804336337952da48c75d32ec9de Mon Sep 17 00:00:00 2001
+From: Wulsic <wulsic@hotmail.com>
+Date: Sun, 21 Jun 2015 12:36:42 +0200
+Subject: [PATCH] Re-implement requires-flush-before-shutdown
+
+Change-Id: I225c269029d63b628b1eb01f7b65c1317f0458b2
+---
+ media/libstagefright/OMXCodec.cpp | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/media/libstagefright/OMXCodec.cpp b/media/libstagefright/OMXCodec.cpp
+index 58372ed..68ffc35 100644
+--- a/media/libstagefright/OMXCodec.cpp
++++ b/media/libstagefright/OMXCodec.cpp
+@@ -260,6 +260,9 @@ uint32_t OMXCodec::getComponentQuirks(
+     if (info->hasQuirk("output-buffers-are-unreadable")) {
+         quirks |= kOutputBuffersAreUnreadable;
+     }
++    if (info->hasQuirk("requires-flush-before-shutdown")) {
++    quirks |= kRequiresFlushBeforeShutdown;
++    }
+ 
+     return quirks;
+ }
+-- 
+1.9.1
+

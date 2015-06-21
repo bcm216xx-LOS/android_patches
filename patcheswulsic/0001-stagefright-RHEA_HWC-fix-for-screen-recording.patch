@@ -1,0 +1,55 @@
+From aa42836b7b56aacc9c2ab2edf3335f5a98c6a791 Mon Sep 17 00:00:00 2001
+From: Wulsic <wulsic@hotmail.com>
+Date: Sun, 21 Jun 2015 12:52:49 +0200
+Subject: [PATCH] stagefright: RHEA_HWC: fix for screen recording
+
+Change-Id: I6193a4403462fc43bb71cb6a4c03b855c37569dc
+---
+ media/libstagefright/omx/GraphicBufferSource.cpp | 2 ++
+ media/libstagefright/omx/OMXNodeInstance.cpp     | 7 +++++++
+ 2 files changed, 9 insertions(+)
+
+diff --git a/media/libstagefright/omx/GraphicBufferSource.cpp b/media/libstagefright/omx/GraphicBufferSource.cpp
+index 44c7edc..7d1735e 100644
+--- a/media/libstagefright/omx/GraphicBufferSource.cpp
++++ b/media/libstagefright/omx/GraphicBufferSource.cpp
+@@ -269,12 +269,14 @@ void GraphicBufferSource::codecBufferEmptied(OMX_BUFFERHEADERTYPE* header) {
+         } else if (type == kMetadataBufferTypeGraphicBuffer) {
+             GraphicBuffer *buffer;
+             memcpy(&buffer, data + 4, sizeof(buffer));
++#ifndef RHEA_HWC
+             if (buffer != codecBuffer.mGraphicBuffer.get()) {
+                 // should never happen
+                 ALOGE("codecBufferEmptied: buffer is %p, expected %p",
+                         buffer, codecBuffer.mGraphicBuffer.get());
+                 CHECK(!"codecBufferEmptied: mismatched buffer");
+             }
++#endif
+         }
+     }
+ 
+diff --git a/media/libstagefright/omx/OMXNodeInstance.cpp b/media/libstagefright/omx/OMXNodeInstance.cpp
+index c04d95f..4585174 100644
+--- a/media/libstagefright/omx/OMXNodeInstance.cpp
++++ b/media/libstagefright/omx/OMXNodeInstance.cpp
+@@ -821,10 +821,17 @@ status_t OMXNodeInstance::createInputSurface(
+     }
+ 
+     if (def.format.video.eColorFormat != OMX_COLOR_FormatAndroidOpaque) {
++#ifdef RHEA_HWC
++        // VC Encoder change OMX_COLOR_FormatAndroidOpaque to 0x7F000005
++        if (def.format.video.eColorFormat != 0x7F000005) {
+++#endif
+         CLOGW("createInputSurface requires COLOR_FormatSurface "
+                 "(AndroidOpaque) color format instead of %s(%#x)",
+                 asString(def.format.video.eColorFormat), def.format.video.eColorFormat);
+         return INVALID_OPERATION;
++#ifdef RHEA_HWC
++        }
++#endif
+     }
+ 
+     GraphicBufferSource* bufferSource = new GraphicBufferSource(
+-- 
+1.9.1
+

@@ -1,0 +1,28 @@
+From 98d0db5ff47f8b82b136bc50cebfdc2ca1c35dc1 Mon Sep 17 00:00:00 2001
+From: Wulsic <wulsic@hotmail.com>
+Date: Sun, 21 Jun 2015 12:47:05 +0200
+Subject: [PATCH] AudioFlinger: S6810: HACK: force audio to 48 KHz
+
+Change-Id: Idf61fe2d3ad560ef74f35ced32f09f49a8f61d5e
+---
+ services/audioflinger/AudioFlinger.cpp | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/services/audioflinger/AudioFlinger.cpp b/services/audioflinger/AudioFlinger.cpp
+index 1a999ee..fa623ad 100644
+--- a/services/audioflinger/AudioFlinger.cpp
++++ b/services/audioflinger/AudioFlinger.cpp
+@@ -1997,8 +1997,9 @@ sp<AudioFlinger::RecordThread> AudioFlinger::openInput_l(audio_module_handle_t m
+     audio_stream_in_t *inStream = NULL;
+     
+ #ifdef RHEA_HWC
+-    ALOGD("Forcing channel mask to mono on capri");
++    ALOGD("Forcing input to mono 48K on capri");
+     halconfig.channel_mask = AUDIO_CHANNEL_IN_MONO;
++    halconfig.sample_rate = 48000;
+ #endif
+ 
+     status_t status = inHwHal->open_input_stream(inHwHal, *input, device, &halconfig,
+-- 
+1.9.1
+

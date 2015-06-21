@@ -1,0 +1,35 @@
+From 5c7067b5510f33751cab3e3798bfab041f350b3a Mon Sep 17 00:00:00 2001
+From: Wulsic <wulsic@hotmail.com>
+Date: Sun, 21 Jun 2015 12:43:19 +0200
+Subject: [PATCH] Subject: [PATCH 4/9] ACodec: Don't trust provided
+ width/height when setting
+
+Change-Id: I666bd0a1339d00bfa26b5b9c3d4aaa3499f4fd33
+---
+ media/libstagefright/ACodec.cpp | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
+
+diff --git a/media/libstagefright/ACodec.cpp b/media/libstagefright/ACodec.cpp
+index 268b975..160def2 100644
+--- a/media/libstagefright/ACodec.cpp
++++ b/media/libstagefright/ACodec.cpp
+@@ -1683,13 +1683,9 @@ status_t ACodec::configureCodec(
+ // Rhea's OMX fail to set a reasonable default size from width and height
+ #ifdef RHEA_HWC
+     else if (!strncmp(mComponentName.c_str(), "OMX.BRCM.vc4.decoder.", 21)) {
+-        int32_t width;
+-        int32_t height;
+-        if (msg->findInt32("width", &width) && msg->findInt32("height", &height)) {
+-            setMinBufferSize(kPortIndexInput, (width * height * 3) / 2);
+-        } else {
+-            ALOGE("Failed to set min buffer size");
+-        }
++        // We cannot trust the width/height from the message
++        // so just use 480x320
++        setMinBufferSize(kPortIndexInput, (480 * 320 * 3) / 2);
+     }
+ #endif
+ 
+-- 
+1.9.1
+

@@ -1,0 +1,30 @@
+From 4600483b05be5976fb96eaf5cd7c881ac226aae3 Mon Sep 17 00:00:00 2001
+From: Wulsic <wulsic@hotmail.com>
+Date: Sun, 21 Jun 2015 12:45:48 +0200
+Subject: [PATCH] AudioFlinger: S6810: HACK: disable stereo record
+
+Change-Id: I0c916c74b3a02f51a68cb8e899160889b152db42
+---
+ services/audioflinger/AudioFlinger.cpp | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/services/audioflinger/AudioFlinger.cpp b/services/audioflinger/AudioFlinger.cpp
+index 4be56e3..1a999ee 100644
+--- a/services/audioflinger/AudioFlinger.cpp
++++ b/services/audioflinger/AudioFlinger.cpp
+@@ -1995,6 +1995,12 @@ sp<AudioFlinger::RecordThread> AudioFlinger::openInput_l(audio_module_handle_t m
+     audio_config_t halconfig = *config;
+     audio_hw_device_t *inHwHal = inHwDev->hwDevice();
+     audio_stream_in_t *inStream = NULL;
++    
++#ifdef RHEA_HWC
++    ALOGD("Forcing channel mask to mono on rhea");
++    halconfig.channel_mask = AUDIO_CHANNEL_IN_MONO;
++#endif
++
+     status_t status = inHwHal->open_input_stream(inHwHal, *input, device, &halconfig,
+                                         &inStream, flags, address.string(), source);
+     ALOGV("openInput_l() openInputStream returned input %p, SamplingRate %d"
+-- 
+1.9.1
+

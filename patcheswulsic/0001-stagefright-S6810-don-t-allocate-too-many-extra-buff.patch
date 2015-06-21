@@ -1,0 +1,48 @@
+From 463b24f34a4220fa8ebae0c54caffb09b70838d5 Mon Sep 17 00:00:00 2001
+From: Wulsic <wulsic@hotmail.com>
+Date: Sun, 21 Jun 2015 12:49:34 +0200
+Subject: [PATCH] stagefright: S6810: don't allocate too many extra buffers
+
+Change-Id: Ia8600f9ce3cb2d6f14144c0cd6c554a12cd34aa5
+---
+ media/libstagefright/ACodec.cpp   | 6 +++++-
+ media/libstagefright/OMXCodec.cpp | 6 +++++-
+ 2 files changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/media/libstagefright/ACodec.cpp b/media/libstagefright/ACodec.cpp
+index 160def2..073f66f 100644
+--- a/media/libstagefright/ACodec.cpp
++++ b/media/libstagefright/ACodec.cpp
+@@ -759,7 +759,11 @@ status_t ACodec::configureOutputBuffersFromNativeWindow(
+     // This check was present in KitKat.
+     if (def.nBufferCountActual < def.nBufferCountMin + *minUndequeuedBuffers) {
+ #endif
+-    for (OMX_U32 extraBuffers = 2 + 1; /* condition inside loop */; extraBuffers--) {
++#ifdef RHEA_HWC
++    for (OMX_U32 extraBuffers = 1; /* condition inside loop */; extraBuffers--) {
++#else
++     for (OMX_U32 extraBuffers = 2 + 1; /* condition inside loop */; extraBuffers--) {
++#endif
+         OMX_U32 newBufferCount =
+             def.nBufferCountMin + *minUndequeuedBuffers + extraBuffers;
+         def.nBufferCountActual = newBufferCount;
+diff --git a/media/libstagefright/OMXCodec.cpp b/media/libstagefright/OMXCodec.cpp
+index a182f09..68690b4 100644
+--- a/media/libstagefright/OMXCodec.cpp
++++ b/media/libstagefright/OMXCodec.cpp
+@@ -1920,7 +1920,11 @@ status_t OMXCodec::allocateOutputBuffersFromNativeWindow() {
+     // This check was present in KitKat.
+     if (def.nBufferCountActual < def.nBufferCountMin + minUndequeuedBufs) {
+ #endif
+-    for (OMX_U32 extraBuffers = 2 + 1; /* condition inside loop */; extraBuffers--) {
++#ifdef RHEA_HWC
+++    for (OMX_U32 extraBuffers = 1; /* condition inside loop */; extraBuffers--) {
++#else
++     for (OMX_U32 extraBuffers = 2 + 1; /* condition inside loop */; extraBuffers--) {
++#endif
+         OMX_U32 newBufferCount =
+             def.nBufferCountMin + minUndequeuedBufs + extraBuffers;
+         def.nBufferCountActual = newBufferCount;
+-- 
+1.9.1
+

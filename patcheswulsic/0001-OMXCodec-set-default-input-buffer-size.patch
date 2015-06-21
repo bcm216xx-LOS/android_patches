@@ -1,0 +1,61 @@
+From 58611d5d9cb32dc318e9815844621018cfda8f05 Mon Sep 17 00:00:00 2001
+From: Wulsic <wulsic@hotmail.com>
+Date: Sun, 21 Jun 2015 12:37:20 +0200
+Subject: [PATCH] OMXCodec: set default input buffer size
+
+Change-Id: I93f8fed2d2073c13cb00a231b1fc2454620d90ad
+---
+ media/libstagefright/ACodec.cpp   | 13 +++++++++++++
+ media/libstagefright/OMXCodec.cpp | 12 ++++++++++++
+ 2 files changed, 25 insertions(+)
+
+diff --git a/media/libstagefright/ACodec.cpp b/media/libstagefright/ACodec.cpp
+index 0f9e505..a315cc1 100644
+--- a/media/libstagefright/ACodec.cpp
++++ b/media/libstagefright/ACodec.cpp
+@@ -1680,6 +1680,19 @@ status_t ACodec::configureCodec(
+     } else if (!strcmp("OMX.Nvidia.aac.decoder", mComponentName.c_str())) {
+         err = setMinBufferSize(kPortIndexInput, 8192);  // XXX
+     }
++// Rhea's OMX fail to set a reasonable default size from width and height
++#ifdef RHEA_HWC
++    else if (!strncmp(mComponentName.c_str(), "OMX.BRCM.vc4.decoder.", 21)) {
++        int32_t width;
++        int32_t height;
++        if (msg->findInt32("width", &width) && msg->findInt32("height", &height)) {
++            setMinBufferSize(kPortIndexInput, (width * height * 3) / 2);
++        } else {
++            ALOGE("Failed to set min buffer size");
++        }
++    }
++#endif
++
+ 
+     mBaseOutputFormat = outputFormat;
+ 
+diff --git a/media/libstagefright/OMXCodec.cpp b/media/libstagefright/OMXCodec.cpp
+index 68ffc35..a182f09 100644
+--- a/media/libstagefright/OMXCodec.cpp
++++ b/media/libstagefright/OMXCodec.cpp
+@@ -664,6 +664,18 @@ status_t OMXCodec::configureCodec(const sp<MetaData> &meta) {
+     if (meta->findInt32(kKeyMaxInputSize, &maxInputSize)) {
+         setMinBufferSize(kPortIndexInput, (OMX_U32)maxInputSize);
+     }
++// Capri's OMX fail to set a reasonable default size from width and height
++#ifdef RHEA_HWC
++    else if (!strncmp(mComponentName, "OMX.BRCM.vc4.decoder.", 21)) {
++        int32_t width;
++        int32_t height;
++        if (meta->findInt32(kKeyWidth, &width) && meta->findInt32(kKeyHeight, &height)) {
++            setMinBufferSize(kPortIndexInput, (width * height * 3) / 2);
++        } else {
++            ALOGE("Failed to set min buffer size");
++        }
++    }
++#endif
+ 
+     initOutputFormat(meta);
+ 
+-- 
+1.9.1
+
