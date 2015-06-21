@@ -78,7 +78,7 @@ index 68ffc35..a182f09 100644
      if (meta->findInt32(kKeyMaxInputSize, &maxInputSize)) {
          setMinBufferSize(kPortIndexInput, (OMX_U32)maxInputSize);
      }
-+// Capri's OMX fail to set a reasonable default size from width and height
++// Rhea's OMX fail to set a reasonable default size from width and height
 +#ifdef RHEA_HWC
 +    else if (!strncmp(mComponentName, "OMX.BRCM.vc4.decoder.", 21)) {
 +        int32_t width;
@@ -222,8 +222,8 @@ index 1a999ee..fa623ad 100644
      audio_stream_in_t *inStream = NULL;
      
  #ifdef RHEA_HWC
--    ALOGD("Forcing channel mask to mono on capri");
-+    ALOGD("Forcing input to mono 48K on capri");
+-    ALOGD("Forcing channel mask to mono on rhea");
++    ALOGD("Forcing input to mono 48K on rhea");
      halconfig.channel_mask = AUDIO_CHANNEL_IN_MONO;
 +    halconfig.sample_rate = 48000;
  #endif
