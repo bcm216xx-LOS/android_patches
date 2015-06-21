@@ -156,8 +156,8 @@ index 271c790..b65dd0c 100644
 -            ALOGE("Failed to set min buffer size");
 -        }
 +        // We cannot trust the width/height from the message
-+        // so just use 1920x1080
-+        setMinBufferSize(kPortIndexInput, (1920 * 1080 * 3) / 2);
++        // so just use 320x480
++        setMinBufferSize(kPortIndexInput, (320 * 480 * 3) / 2);
      }
  #endif
  
