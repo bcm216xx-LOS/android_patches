@@ -12,7 +12,7 @@ diff --git a/src/java/com/android/internal/telephony/ExtCallManager.java b/src/j
 index 0a91eb9..646bd04 100644
 --- a/src/java/com/android/internal/telephony/ExtCallManager.java
 +++ b/src/java/com/android/internal/telephony/ExtCallManager.java
-@@ -331,6 +331,18 @@ public class ExtCallManager extends CallManager {
+@@ -334,6 +334,18 @@ public class ExtCallManager extends CallManager {
              case RINGING:
                  if (VDBG) Rlog.d(LOG_TAG, "setAudioMode RINGING");
                  int curAudioMode = mAudioManager.getMode();
@@ -30,7 +30,7 @@ index 0a91eb9..646bd04 100644
 +
                  if (curAudioMode != AudioManager.MODE_RINGTONE) {
                      // only request audio focus if the ringtone is going to be heard
-                     if (mAudioManager.getStreamVolume(AudioManager.STREAM_RING) > 0) {
+                     if (mAudioManager.getStreamVolume(AudioManager.STREAM_RING) > 0
 -- 
 1.8.5.2 (Apple Git-48)
 
